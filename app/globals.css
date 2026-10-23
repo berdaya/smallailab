@@ -2,25 +2,163 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #26251e;
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #e7e7e7;
+  color: #26251e;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .berdaya-label {
+    opacity: 1;
+    translate: 0 -50%;
+  }
+}
+
+/* ------------------------------- Berdaya (/berdaya) ------------------------------- */
+/* Parameter (structure, mono labels, findings console) x MindFort (swarm,
+   sand + ink monochrome, ASCII art) — rendered entirely in light mode. */
+
+.berdaya-root {
+  font-family: var(--font-berdaya-sans), ui-sans-system, system-ui, sans-serif;
+  color-scheme: light;
+  /* safety net against any stray wide element on small phones;
+     `clip` (not hidden) keeps the sticky header working */
+  overflow-x: clip;
+}
+
+/* never let media force the page wider than the phone */
+.berdaya-root img,
+.berdaya-root svg,
+.berdaya-root pre {
+  max-width: 100%;
+}
+
+.berdaya-root ::selection {
+  background: rgba(28, 26, 21, 0.16);
+  color: #1c1a15;
+}
+
+/* faint blueprint grid in hero (light) */
+.berdaya-grid {
+  background-image:
+    linear-gradient(to right, rgba(22, 22, 19, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 22, 19, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 70% at 30% 20%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 30% 20%, #000 30%, transparent 75%);
+}
+
+.berdaya-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* scroll reveal */
+.berdaya-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.berdaya-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* logo marquee */
+@keyframes berdaya-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.berdaya-marquee {
+  animation: berdaya-marquee 36s linear infinite;
+}
+.berdaya-marquee-wrap:hover .berdaya-marquee {
+  animation-play-state: paused;
+}
+
+/* animated ASCII swarm (agent context): soften character flicker */
+.berdaya-swarm span {
+  transition: color 0.25s linear;
+}
+
+/* hero swarm: floating agent chips, rotating log lines, target ring */
+@keyframes berdaya-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.berdaya-float {
+  animation: berdaya-float 5s ease-in-out infinite;
+}
+.berdaya-float-late {
+  animation: berdaya-float 6s ease-in-out 1.2s infinite;
+}
+
+@keyframes berdaya-log-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+.berdaya-log-in {
+  animation: berdaya-log-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes berdaya-target-pulse {
+  0% { box-shadow: 0 16px 40px -16px rgba(28, 26, 21, 0.4), 0 0 0 0 rgba(28, 26, 21, 0.14); }
+  70% { box-shadow: 0 16px 40px -16px rgba(28, 26, 21, 0.4), 0 0 0 14px rgba(28, 26, 21, 0); }
+  100% { box-shadow: 0 16px 40px -16px rgba(28, 26, 21, 0.4), 0 0 0 0 rgba(28, 26, 21, 0); }
+}
+.berdaya-target-ring {
+  animation: berdaya-target-pulse 2.6s ease-out infinite;
+}
+
+/* decorative pixels gently pulse, staggered via inline animation-delay */
+@keyframes berdaya-pixel {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.berdaya-pixel {
+  animation: berdaya-pixel 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .berdaya-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .berdaya-marquee,
+  .berdaya-pixel,
+  .berdaya-float,
+  .berdaya-float-late,
+  .berdaya-log-in,
+  .berdaya-target-ring {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .berdaya-root {
+    scroll-behavior: smooth;
+  }
 }
